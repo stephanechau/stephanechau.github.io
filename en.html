@@ -345,6 +345,8 @@ a.card{text-decoration:none;color:inherit}
 .rc .av svg{width:22px;height:22px}
 .rc .who b{display:block;font-size:14px}.rc .who small{display:block;font-size:12px;color:var(--mute);line-height:1.35}.rc .who em{display:block;font-style:normal;font-size:11.5px;color:#7cc4ff;margin-top:2px}
 .recq{cursor:pointer}
+#vtoast{position:fixed;left:50%;bottom:110px;transform:translate(-50%,20px);width:min(92vw,420px);background:#111a3a;border:1px solid rgba(124,196,255,.4);color:#eef2fa;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.45;box-shadow:0 14px 40px rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:.35s;z-index:99}
+#vtoast.on{opacity:1;transform:translate(-50%,0)}
 .btn svg.flag{width:20px;height:14px;border-radius:2px}
 .cvcard{align-items:flex-start!important}
 .cvth{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
@@ -754,6 +756,10 @@ function startMetro(m){clearInterval(metroT);const st=[...m.querySelectorAll('.s
 function reply(html){const t=add('him','<span class="typing"><i></i><i></i><i></i></span>');setTimeout(()=>{t.innerHTML=html;msgs.scrollTop=msgs.scrollHeight;const m=t.querySelector('.metro');if(m)startMetro(m)},900)}
 function renderSugg(){sugg.innerHTML='';Object.keys(QA).forEach(q=>{const b=document.createElement('button');b.textContent=q;b.onclick=()=>{b.classList.add('done');add('me',q);reply(QA[q])};sugg.appendChild(b)})}
 
+(function(){const fr=document.documentElement.lang==='fr';
+ function toast(m){let t=document.getElementById('vtoast');if(!t){t=document.createElement('div');t.id='vtoast';document.body.appendChild(t)}t.innerHTML=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),9000)}
+ document.querySelectorAll('a[href$=".vcf"]').forEach(a=>{a.setAttribute('download','Stephane-Chau.vcf');a.setAttribute('type','text/vcard');
+  a.addEventListener('click',()=>{if(/Android/i.test(navigator.userAgent))setTimeout(()=>toast(fr?'<b>Fiche contact téléchargée.</b><br>Touchez la notification de téléchargement (ou ouvrez <i>Stephane-Chau.vcf</i> dans vos fichiers), puis choisissez <b>Contacts</b> pour l’enregistrer.':'<b>Contact card downloaded.</b><br>Tap the download notification (or open <i>Stephane-Chau.vcf</i> in your files), then choose <b>Contacts</b> to save it.'),400)})})})();
 document.querySelectorAll('.lang a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();try{localStorage.setItem('lang',a.dataset.l)}catch(_){};location.href=a.getAttribute('href')+location.hash}));
 (function(){const h=location.hash.slice(1);if(h&&document.getElementById('s-'+h))setTimeout(()=>go(h),1550)})();
 document.getElementById('recg').innerHTML=RECS.map(r=>`<div class="card rc" style="--c:${r[4]}"><div class="bub">${r[0]}</div><div class="who"><span class="av"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span><b>${r[1]}</b><small>${r[2]}</small><em>${r[3]}</em></span></div></div>`).join('');
